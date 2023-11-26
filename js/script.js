@@ -6,22 +6,16 @@ let ctx = gameBoard.getContext('2d');
 gameBoard.width = sideLength;
 gameBoard.height = sideLength;
 
-const snakeHead = { x: 50, y: 50, speedX: 0, speedY: 0, color: 'lime' };
+let snakeHead = { x: 50, y: 50, speedX: 0, speedY: 0, color: 'lime' };
 const snakeBody = [];
 const fruit = { x: 0, y: 0, color: 'red' };
-
-
-
-
 let gameOver = false;
 
-document.querySelector('button').addEventListener('click', function () {
-    gameOver = false;
-    window.addEventListener('keydown', direction);
-    setInterval(update, 100);
-    placeFruit();
-})
 
+
+window.addEventListener('keydown', direction);
+setInterval(update, 100);
+placeFruit();
 
 function update() {
     if (gameOver) {
@@ -71,10 +65,14 @@ function drawSnake() {
 function gameover() {
     if (snakeHead.x < 0 || snakeHead.x > sideLength || snakeHead.y < 0 || snakeHead.y > sideLength) {
         gameOver = true;
+    } else{
+        gameOver = false;
     }
     for (let i = 0; i < snakeBody.length; i++) {
         if (snakeHead.x == snakeBody[i].x && snakeHead.y == snakeBody[i].y) {
             gameOver = true;
+        } else{
+            gameOver = false;
         }
     }
     return gameOver
