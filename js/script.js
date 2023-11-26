@@ -1,124 +1,125 @@
 const gameBoard = document.getElementById('game_box');
-let direzione = 'left';
-let rowTile = 25;
-let mapTile = Math.pow(rowTile, 2);
+let sideLength = 600;
+let mapTile = 25;
+let ctx = gameBoard.getContext('2d');
 
-createGrid(rowTile)
-let position = Math.floor( Math.random() * (mapTile) + 1 );
-document.querySelector('.x-' + position).classList.add('active');
-setInterval(function() {
-    document.querySelector('.x-' + position).classList.remove('active');
-    position = newPosition(direzione, position, rowTile);
-    document.querySelector('.x-' + position).classList.add('active');
-}, 1000);
+gameBoard.width = sideLength;
+gameBoard.height = sideLength;
+
+const snakeHead = { x: 50, y: 50, speedX: 0, speedY: 0, color: 'lime' };
+const snakeBody = [];
+const fruit = { x: 0, y: 0, color: 'red' };
 
 
 
 
+let gameOver = false;
 
-
-
-
-
-function createGrid(row) {
-        for(let i = 0; i < Math.pow(row, 2); i++) {
-            let tile = document.createElement('div');
-            tile.style.width = `calc(100% / ${rowTile})`;
-            tile.style.height = `calc(100% / ${rowTile})`;
-            tile.classList.add('x-' + (i + 1));
-            gameBoard.appendChild(tile);
-        }
-}
-
-function newPosition(direction, position, row) {
-    switch(direction) {
-        case 'right':
-            position += 1;
-            if(position % row === 1){
-              position -= row;
-            }
-        break;
-
-        case 'left':
-            position -= 1;
-            if(position % row === 0){
-              position += row;
-            }
-        break;
-
-        case 'top':
-            position -= row;
-            if(position < 0){
-              position += Math.pow(row, 2);
-            }
-        break;
-
-        case 'bottom':
-            position += row;
-            if(position > Math.pow(row, 2)){
-              position -= Math.pow(row, 2);
-            }
-        break;
-    }
-    return position;
-}
-
-document.addEventListener('keydown', function(event) {
-    switch(event.code) {        
-        case "ArrowLeft":
-            direzione = 'left'
-        break;
-
-        case "ArrowUp":
-            direzione = 'top'
-        break;
-
-        case "ArrowDown":
-            direzione = 'bottom'
-        break;
-
-        case "ArrowRight":
-            direzione = 'right'   
-        break;
-    }
+document.querySelector('button').addEventListener('click', function () {
+    gameOver = false;
+    window.addEventListener('keydown', direction);
+    setInterval(update, 100);
+    placeFruit();
 })
 
 
+function update() {
+    if (gameOver) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, sideLength, sideLength);
+        return
+    }
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, sideLength, sideLength);
+    ctx.strokeStyle = 'white';
+    drawGrid(mapTile, sideLength);
 
+    ctx.fillStyle = fruit.color;
+    ctx.fillRect(fruit.x, fruit.y, mapTile, mapTile);
+    if (snakeHead.x == fruit.x && snakeHead.y == fruit.y) {
+        snakeBody.push({ x: fruit.x, y: fruit.y })
+        placeFruit();
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function getRandomBetween(min, max, exception){
-  let num = Math.floor(Math.random()*(max-min + 1) + min);
-  if(!exception.includes(num)){
-    return num
-  }
+    drawSnake();
+    gameover();
 }
+
+
+function placeFruit() {
+    fruit.x = Math.floor(Math.random() * (sideLength / mapTile)) * mapTile;
+    fruit.y = Math.floor(Math.random() * (sideLength / mapTile)) * mapTile;
+}
+
+function drawSnake() {
+    for (let i = snakeBody.length - 1; i > 0; i--) {
+        snakeBody[i] = snakeBody[i - 1];
+    };
+    if (snakeBody.length) {
+        snakeBody[0] = { x: snakeHead.x, y: snakeHead.y };
+    }
+
+    ctx.fillStyle = snakeHead.color;
+    snakeHead.x += snakeHead.speedX * mapTile;
+    snakeHead.y += snakeHead.speedY * mapTile;
+    ctx.fillRect(snakeHead.x, snakeHead.y, mapTile, mapTile);
+    for (let i = 0; i < snakeBody.length; i++) {
+        ctx.fillRect(snakeBody[i].x, snakeBody[i].y, mapTile, mapTile)
+    }
+}
+
+function gameover() {
+    if (snakeHead.x < 0 || snakeHead.x > sideLength || snakeHead.y < 0 || snakeHead.y > sideLength) {
+        gameOver = true;
+    }
+    for (let i = 0; i < snakeBody.length; i++) {
+        if (snakeHead.x == snakeBody[i].x && snakeHead.y == snakeBody[i].y) {
+            gameOver = true;
+        }
+    }
+    return gameOver
+}
+
+function direction(event) {
+    switch (event.code) {
+        case 'ArrowUp':
+            if (snakeHead.speedY !== 1) {
+                snakeHead.speedX = 0;
+                snakeHead.speedY = -1;
+            }
+            break;
+        case 'ArrowRight':
+            if (snakeHead.speedX !== -1) {
+                snakeHead.speedX = 1;
+                snakeHead.speedY = 0;
+            }
+            break;
+        case 'ArrowDown':
+            if (snakeHead.speedY !== -1) {
+                snakeHead.speedX = 0;
+                snakeHead.speedY = 1;
+            }
+            break;
+        case 'ArrowLeft':
+            if (snakeHead.speedX !== 1) {
+                snakeHead.speedX = -1;
+                snakeHead.speedY = 0;
+            }
+            break;
+    }
+}
+
+function drawGrid(unit, maxSize) {
+    for (let i = 0; i < maxSize; i = i + unit) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(sideLength, i);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, sideLength);
+        ctx.stroke();
+    }
+}
+

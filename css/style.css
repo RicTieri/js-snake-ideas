@@ -15,17 +15,5 @@ body {
 #game_box{
   width: 600px;
   height: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
   border: 1px solid black;
-}
-
-#game_box div{
-  border: 1px solid black;
-}
-
-.active {
-  background-color: black;
 }
