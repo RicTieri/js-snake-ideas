@@ -10,10 +10,47 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: black;
+  color: lime;
 }
+
+#btn-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 2rem;
+}
+
+button{
+  background-color: black;
+  color: lime;  
+  border: none;
+  width: 60px;
+  box-shadow: 0 0 15px 2px lime;
+  border-radius: 20px;
+  padding: .5rem 1rem;
+  margin-bottom: 2rem;
+}
+
+#canvas-wrapper{
+  border: 2px solid lime;
+  margin: .25rem;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 15px 2px lime;
+}
+
+.box{
+  border: 2px solid lime;
+  border-radius: 25px;
+  box-shadow: 0 0 15px 2px lime;
+}
+
 
 #game_box{
   width: 600px;
   height: 600px;
-  border: 1px solid black;
 }
+
+
