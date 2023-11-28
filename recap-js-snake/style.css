@@ -2,18 +2,27 @@
     width: 500px;
     height: 500px;
     margin: 0 auto;
-    border: 3px solid red;
+    border: 3px solid black;
     display: flex;
     flex-wrap: wrap;
 }
 
+.bg-black{
+    background-color: black;
+}
+
 .single-cell {
     box-sizing: border-box;
-    border: 1px solid red;
-    width: calc( 100% / 10 );
-    height: calc( 100% / 10 );
+    border: 1px solid black;
+    /* width: calc( 100% / 10 );
+    height: calc( 100% / 10 ); */
 }
 
 .active {
-    background-color: blue;
+    background-color: lime;
+}
+
+.food {
+    background-color: brown;
+    z-index: -1;
 }
