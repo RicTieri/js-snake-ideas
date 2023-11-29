@@ -4,9 +4,9 @@ let score = 0;
 let direzione = 'right';
 let position;
 let columnsNumber = 20;
-let head = {};
-let body = [];
-let food = { point: 0 };
+let head;
+let body;
+let food;
 let game;
 let game_run = true;
 let game_over = false;
@@ -69,10 +69,10 @@ function reset(){
     container.classList.remove('bg-gameover');
     createGrid(container, columnsNumber);
     direzione = 'right';
-    food = { point: 0 };
+    food = 0;
     body = [];
     position = Math.floor(Math.random() * (100) + 1);
-    head.point = position;
+    head = position;
     score = 0;
     document.getElementById('score').innerHTML = score
     game_run = true;
@@ -84,34 +84,37 @@ function reset(){
 function start_game() {
     game = setInterval(function () {
         // draw head
-        document.querySelector('#cell-' + head.point).classList.remove('active');
-        head.point = newPosition(direzione, head.point, columnsNumber);
-        document.querySelector('#cell-' + head.point).classList.add('active');
+        document.querySelector('#cell-' + head).classList.remove('active');
+        head = newPosition(direzione, head, columnsNumber);
+        document.querySelector('#cell-' + head).classList.add('active');
         // draw body with condition
         body.forEach((element) => document.querySelector('#cell-' + element).classList.remove('active'));
 
         if (body.length) {
-            body.push(head.point);
+            body.push(head);
             body.shift();
             for (let i = 0; i < body.length - 1; i++) {
-                if(body[i] == head.point) gameOver();
+                if(body[i] == head) gameOver();
             };
         };
 
         body.forEach((element) => document.querySelector('#cell-' + element).classList.add('active'));
         // food interaction
-        if (head.point == food.point) {
-            document.querySelector('#cell-' + food.point).classList.remove('food')
-            body.push(head.point);
-            if(body.length == 1) body.push(head.point);
-            food.point = 0;
+        if (head == food) {
+            document.querySelector('#cell-' + food).classList.remove('food')
+            body.push(head);
+            if(body.length == 1) body.push(head);
+            food = 0;
             score++;
             document.getElementById('score').innerHTML = score;
         };
 
-        if (food.point == 0) {
-            placeFood(1, columnsNumber*columnsNumber, food);
-            document.querySelector('#cell-' + food.point).classList.add('food');
+        if (food == 0) {
+            while (food == 0) {
+                let num = placeFood(1, columnsNumber*columnsNumber);
+                if (num !== head && !body.includes(num)) food = num;
+            }
+            document.querySelector('#cell-' + food).classList.add('food');
         };
     }, 200);
 }
@@ -175,8 +178,8 @@ function createGrid(container, columns) {
  * @param {*} max 
  * @param {*} fruit 
  */
-function placeFood(min, max, fruit) {
-    fruit.point = Math.floor(Math.random() * (max - min)) + min;
+function placeFood(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 };
 
 /**
