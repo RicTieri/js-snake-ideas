@@ -9,6 +9,8 @@ let body = [];
 let food = { point: 0 };
 let game;
 let game_run = true;
+let game_over = false;
+
 
 
 
@@ -25,12 +27,14 @@ document.querySelector('button#start').addEventListener('click', () => {
 });
 
 document.querySelector('button#pause').addEventListener('click', () => {
-    if (game_run) {
-        clearInterval(game);
-        game_run = false;
-    } else {
-        start_game();
-        game_run = true;
+    if(!game_over){
+        if (game_run) {
+            clearInterval(game);
+            game_run = false;
+        } else {
+            start_game();
+            game_run = true;
+        }
     }
 });
 
@@ -40,13 +44,13 @@ document.addEventListener('keydown', function (event) {
             if(direzione !== 'right') direzione = 'left';
             break;
         case "ArrowUp":
-            if(direzione !== 'bottom') direzione = 'top'
+            if(direzione !== 'bottom') direzione = 'top';
             break;
         case "ArrowDown":
-            if(direzione !== 'top') direzione = 'bottom'
+            if(direzione !== 'top') direzione = 'bottom';
             break;
         case "ArrowRight":
-            if(direzione !== 'left') direzione = 'right'
+            if(direzione !== 'left') direzione = 'right';
             break;
     }
 });
@@ -60,8 +64,9 @@ document.addEventListener('keydown', function (event) {
  */
 function reset(){
     clearInterval(game);
+    game_over = false;
     container.innerHTML = '';
-    container.classList.remove('bg-black');
+    container.classList.remove('bg-gameover');
     createGrid(container, columnsNumber);
     direzione = 'right';
     food = { point: 0 };
@@ -72,6 +77,7 @@ function reset(){
     document.getElementById('score').innerHTML = score
     game_run = true;
 };
+
  /**
   * function to draw game object
   */
@@ -82,10 +88,8 @@ function start_game() {
         head.point = newPosition(direzione, head.point, columnsNumber);
         document.querySelector('#cell-' + head.point).classList.add('active');
         // draw body with condition
-        body.forEach((element) => {
-            document.querySelector('#cell-' + element).classList.remove('active');
-        });
-        
+        body.forEach((element) => document.querySelector('#cell-' + element).classList.remove('active'));
+
         if (body.length) {
             body.push(head.point);
             body.shift();
@@ -93,14 +97,13 @@ function start_game() {
                 if(body[i] == head.point) gameOver();
             };
         };
-        
-        for (let i = 0; i < body.length; i++) {
-            document.querySelector('#cell-' + body[i]).classList.add('active');
-        };
+
+        body.forEach((element) => document.querySelector('#cell-' + element).classList.add('active'));
         // food interaction
         if (head.point == food.point) {
             document.querySelector('#cell-' + food.point).classList.remove('food')
             body.push(head.point);
+            if(body.length == 1) body.push(head.point);
             food.point = 0;
             score++;
             document.getElementById('score').innerHTML = score;
@@ -126,12 +129,12 @@ function newPosition(direction, position, columns) {
 
         case 'right':
             position += 1;
-            if (position % columns == 0) gameOver();
+            if (position % columns == 1) gameOver();
             break;
 
         case 'left':
             position -= 1;
-            if (position % columns == 1) gameOver();
+            if (position % columns == 0) gameOver();
             break;
 
         case 'top':
@@ -180,7 +183,8 @@ function placeFood(min, max, fruit) {
  * function to stop the game
  */
 function gameOver() {
-    container.classList.add('bg-black');
+    game_over = true;
+    container.classList.add('bg-gameover');
     clearInterval(game);
 };
 

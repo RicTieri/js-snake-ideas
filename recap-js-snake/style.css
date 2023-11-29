@@ -26,8 +26,8 @@ body{
     box-shadow: 0 0 20px 2px lightgrey;
 }
 
-.bg-black{
-    background-color: black;
+.bg-gameover{
+    background-color: rgba(14, 14, 14, 1);
 }
 
 .single-cell {
@@ -37,7 +37,8 @@ body{
 
 .active {
     background-color: lime;
-    border: none;
+    /* border: none; */
+    z-index: -1;
 }
 
 .food {
@@ -59,6 +60,11 @@ body{
     background-color: darkgrey;
     box-shadow: 0 0 20px 2px lightgrey;
     margin-bottom: 1.5rem;
+}
+
+.btn-wrapper button:hover{
+    scale: 1.1;
+    background-color: rgb(122, 122, 122);
 }
 
 .scoreboard{
