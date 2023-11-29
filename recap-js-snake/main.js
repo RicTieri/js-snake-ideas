@@ -86,10 +86,10 @@ function start_game() {
         // draw head
         document.querySelector('#cell-' + head).classList.remove('active');
         head = newPosition(direzione, head, columnsNumber);
-        document.querySelector('#cell-' + head).classList.add('active');
-        // draw body with condition
+        if (head % columnsNumber == 1 || head % columnsNumber == 0 || head < 0 || head > columnsNumber*columnsNumber) gameOver();
         body.forEach((element) => document.querySelector('#cell-' + element).classList.remove('active'));
-
+        // draw body with condition
+        
         if (body.length) {
             body.push(head);
             body.shift();
@@ -97,8 +97,9 @@ function start_game() {
                 if(body[i] == head) gameOver();
             };
         };
-
+        
         body.forEach((element) => document.querySelector('#cell-' + element).classList.add('active'));
+        document.querySelector('#cell-' + head).classList.add('active');
         // food interaction
         if (head == food) {
             document.querySelector('#cell-' + food).classList.remove('food')
@@ -132,28 +133,21 @@ function newPosition(direction, position, columns) {
 
         case 'right':
             position += 1;
-            if (position % columns == 1) gameOver();
             break;
 
         case 'left':
             position -= 1;
-            if (position % columns == 0) gameOver();
             break;
 
         case 'top':
             position -= columns;
-            if (position < 0) gameOver();
             break;
 
         case 'bottom':
             position += columns;
-            if (position > columns*columns) gameOver();
             break;
-
     }
-
     return position;
-
 };
 
 /**
@@ -187,7 +181,7 @@ function placeFood(min, max) {
  */
 function gameOver() {
     game_over = true;
-    container.classList.add('bg-gameover');
+    container.classList.add('bg-gameov');
     clearInterval(game);
 };
 
