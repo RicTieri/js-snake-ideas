@@ -71,7 +71,7 @@ function reset(){
     direzione = 'right';
     food = 0;
     body = [];
-    position = Math.floor(Math.random() * (100) + 1);
+    position = 150;
     head = position;
     score = 0;
     document.getElementById('score').innerHTML = score
@@ -87,8 +87,9 @@ function start_game() {
         document.querySelector('#cell-' + head).classList.remove('active');
         head = newPosition(direzione, head, columnsNumber);
         if (head % columnsNumber == 1 || head % columnsNumber == 0 || head < 0 || head > columnsNumber*columnsNumber) gameOver();
-        body.forEach((element) => document.querySelector('#cell-' + element).classList.remove('active'));
+        document.querySelector('#cell-' + head).classList.add('active');
         // draw body with condition
+        body.forEach((element) => document.querySelector('#cell-' + element).classList.remove('active'));
         
         if (body.length) {
             body.push(head);
@@ -99,7 +100,6 @@ function start_game() {
         };
         
         body.forEach((element) => document.querySelector('#cell-' + element).classList.add('active'));
-        document.querySelector('#cell-' + head).classList.add('active');
         // food interaction
         if (head == food) {
             document.querySelector('#cell-' + food).classList.remove('food')
@@ -112,7 +112,7 @@ function start_game() {
 
         if (food == 0) {
             while (food == 0) {
-                let num = placeFood(1, columnsNumber*columnsNumber);
+                let num = placeRandom(1, columnsNumber*columnsNumber);
                 if (num !== head && !body.includes(num)) food = num;
             }
             document.querySelector('#cell-' + food).classList.add('food');
@@ -172,7 +172,7 @@ function createGrid(container, columns) {
  * @param {*} max 
  * @param {*} fruit 
  */
-function placeFood(min, max) {
+function placeRandom(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 };
 
@@ -181,7 +181,7 @@ function placeFood(min, max) {
  */
 function gameOver() {
     game_over = true;
-    container.classList.add('bg-gameov');
+    container.classList.add('bg-gameover');
     clearInterval(game);
 };
 
